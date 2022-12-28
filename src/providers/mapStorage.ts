@@ -19,7 +19,7 @@ export class MapProvider {
   }
 
   async findAll() {
-    return Object.entries(this.tokens).map(([value, key]) => ({
+    return Object.entries(this.tokens).map(([key, value]) => ({
       id: key,
       tokens: value,
     }));
