@@ -9,7 +9,7 @@ import { defaultScopes } from "constants/discord";
 import { Authorization } from "core/Authorization";
 import { DatabaseProvider, TokenStorage } from "core/TokenStorage";
 import { MapProvider } from "providers/mapStorage";
-import { MetadataTypes } from "types/MetadataTypes";
+import { MetadataTypes } from "constants/MetadataTypes";
 
 export class Application {
   token: string;
@@ -127,5 +127,5 @@ export interface ApplicationMetadata {
   key: string;
   name: string;
   description: string;
-  type: MetadataTypes;
+  type: typeof MetadataTypes;
 }
