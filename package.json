@@ -17,8 +17,7 @@
     "crypto": "^1.0.1",
     "discord-api-types": "^0.37.24",
     "express": "^4.18.2",
-    "mongoose": "^6.8.1",
-    "node-fetch": "^2.6.7"
+    "mongoose": "^6.8.1"
   },
   "devDependencies": {
     "@types/node": "^18.7.18",
