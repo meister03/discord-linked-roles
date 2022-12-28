@@ -80,9 +80,6 @@ export class Application {
     const tokens = await this.tokenStorage.get(userId);
     if (!tokens) throw new Error("No tokens found for the user");
     return this.rest.get(Routes.userApplicationRoleConnection(this.id), {
-      headers: {
-        Authorization: `Bearer ${tokens.access_token}`,
-      },
       auth: false,
     });
   }
@@ -96,7 +93,6 @@ export class Application {
     if (!tokens) throw new Error("No tokens found for the user");
     return this.rest.put(Routes.userApplicationRoleConnection(this.id), {
       headers: {
-        Authorization: `Bearer ${tokens.access_token}`,
         "Content-Type": "application/json",
       },
       body: {
@@ -118,9 +114,6 @@ export class Application {
       tokens = { access_token: access_token, refresh_token: "" } as any;
     return this.rest
       .get(Routes.oauth2CurrentAuthorization(), {
-        headers: {
-          Authorization: `Bearer ${tokens?.access_token}`,
-        },
         auth: false,
       })
       .then((x: any) => x.user) as any;
