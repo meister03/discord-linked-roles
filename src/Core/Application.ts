@@ -1,6 +1,6 @@
 import { REST } from "@discordjs/rest";
 import { RESTGetAPIUserResult, Routes, Snowflake } from "discord-api-types/v10";
-import { DiscordConstants, defaultScopes } from "util/Constants";
+import { DiscordConstants, defaultScopes } from "constants/discord";
 import { Authorization } from "core/Authorization";
 import { DatabaseProvider, TokenStorage } from "core/TokenStorage";
 import { MapProvider } from "providers/mapStorage";

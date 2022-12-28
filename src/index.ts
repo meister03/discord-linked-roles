@@ -1,4 +1,4 @@
-export * from "util/Constants";
+export * from "constants/discord";
 export * from "providers/mapStorage";
 export * from "providers/mongoose";
 
