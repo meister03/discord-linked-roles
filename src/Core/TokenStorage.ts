@@ -1,3 +1,4 @@
+import { Snowflake } from "discord-api-types/globals";
 import { OAuthTokens } from "types/OAuthTokens";
 
 export class TokenStorage {
@@ -9,7 +10,7 @@ export class TokenStorage {
     this.tokens = new Map();
   }
 
-  async get(userId: string) {
+  async get(userId: Snowflake) {
     if (!this.tokens.has(userId)) {
       const token = await this.provider.fetchUser(userId);
       if (token) this.tokens.set(userId, token);
@@ -17,12 +18,12 @@ export class TokenStorage {
     return this.tokens.get(userId);
   }
 
-  async set(userId: string, token: OAuthTokens) {
+  async set(userId: Snowflake, token: OAuthTokens) {
     this.tokens.set(userId, token);
     await this.provider.createOrUpdate(userId, token);
   }
 
-  async delete(userId: string) {
+  async delete(userId: Snowflake) {
     this.tokens.delete(userId);
     await this.provider.deleteUser(userId);
   }
@@ -35,7 +36,7 @@ export class TokenStorage {
 export type DatabaseProvider = {
   findAll(): Promise<{ tokens: OAuthTokens; id: string }>;
   // Gets the token for the user
-  fetchUser: (userId: string) => Promise<OAuthTokens | undefined>;
-  createOrUpdate: (userId: string, token: OAuthTokens) => Promise<void>;
-  deleteUser: (userId: string) => Promise<void>;
+  fetchUser: (userId: Snowflake) => Promise<OAuthTokens | undefined>;
+  createOrUpdate: (userId: Snowflake, token: OAuthTokens) => Promise<void>;
+  deleteUser: (userId: Snowflake) => Promise<void>;
 };
