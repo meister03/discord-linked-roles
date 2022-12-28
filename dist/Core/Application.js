@@ -92,5 +92,20 @@ class Application {
             auth: false,
         }).then((x) => x.user);
     }
+    async fetchGuilds(userId, access_token) {
+        if (!this.scopes.includes('guilds'))
+            throw new Error('The guilds scope is required to fetch guilds');
+        let tokens = await this.tokenStorage.get(userId);
+        if (!tokens && !access_token)
+            throw new Error('No tokens found for the user');
+        if (!tokens && access_token)
+            tokens = { access_token: access_token, refresh_token: '' };
+        return this.rest.get(v10_1.Routes.user('@me') + '/guilds', {
+            headers: {
+                Authorization: `Bearer ${tokens?.access_token}`
+            },
+            auth: false,
+        });
+    }
 }
 exports.Application = Application;

@@ -26,11 +26,12 @@ export declare class Application {
         [key: string]: string;
     }): Promise<unknown>;
     fetchUser(userId: string, access_token?: string): Promise<RESTGetAPIUserResult>;
+    fetchGuilds(userId: string, access_token?: string): Promise<any>;
 }
 export interface ApplicationMetaData {
     key: string;
     name: string;
     description: string;
-    type: MetaDataTypes;
+    type: typeof MetaDataTypes;
 }
 //# sourceMappingURL=Application.d.ts.map

@@ -84,11 +84,23 @@ export class Application {
         }).then((x: any) => x.user) as any;
     }
 
+    async fetchGuilds(userId: string, access_token?: string): Promise<any> {
+        if(!this.scopes.includes('guilds')) throw new Error('The guilds scope is required to fetch guilds');
+        let tokens = await this.tokenStorage.get(userId);
+        if(!tokens && !access_token) throw new Error('No tokens found for the user');
+        if(!tokens && access_token) tokens = { access_token: access_token, refresh_token: '' } as any;
+        return this.rest.get( Routes.user('@me') +'/guilds' as any, {
+            headers: {
+                Authorization: `Bearer ${tokens?.access_token}`
+            },
+            auth: false,
+        });
+    }
 }
 
 export interface ApplicationMetaData {
     key: string;
     name: string;
     description: string;
-    type: MetaDataTypes;
+    type: typeof MetaDataTypes;
 }
