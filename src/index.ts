@@ -1,7 +1,7 @@
-export * from './Util/Constants';
-export * from './DatabaseProviders/mapstorage';
-export * from './DatabaseProviders/mongoose';
+export * from "util/Constants";
+export * from "providers/mapStorage";
+export * from "providers/mongoose";
 
-export * from './Core/TokenStorage';
-export * from './Core/Authorization';
-export * from './Core/Application';
+export * from "core/TokenStorage";
+export * from "core/Authorization";
+export * from "core/Application";
