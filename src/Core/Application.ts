@@ -1,6 +1,11 @@
 import { REST } from "@discordjs/rest";
-import { RESTGetAPIUserResult, Routes, Snowflake } from "discord-api-types/v10";
-import { DiscordConstants, defaultScopes } from "constants/discord";
+import {
+  RESTGetAPIUserResult,
+  Routes,
+  Snowflake,
+  GatewayVersion,
+} from "discord-api-types/v10";
+import { defaultScopes } from "constants/discord";
 import { Authorization } from "core/Authorization";
 import { DatabaseProvider, TokenStorage } from "core/TokenStorage";
 import { MapProvider } from "providers/mapStorage";
@@ -46,9 +51,7 @@ export class Application {
         "At least one scope is required in the application options"
       );
 
-    this.rest = new REST({ version: DiscordConstants.http.version }).setToken(
-      this.token
-    );
+    this.rest = new REST({ version: GatewayVersion }).setToken(this.token);
     this.authorization = new Authorization(this);
     this.tokenStorage = new TokenStorage(
       (options.databaseProvider as DatabaseProvider) || new MapProvider()
