@@ -1,4 +1,4 @@
-import crypto from "crypto";
+import crypto from "node:crypto";
 import { Routes, Snowflake } from "discord-api-types/v10";
 import type { Application } from "core/Application";
 import { OAuthTokens } from "types/OAuthTokens";
