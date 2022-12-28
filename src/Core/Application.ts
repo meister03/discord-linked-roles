@@ -39,12 +39,12 @@ export class Application {
       throw new Error("A token is required in the application options");
     if (!this.id)
       throw new Error(
-        "A application id is required in the application options"
+        "A application ID is required in the application options"
       );
     if (!this.clientSecret)
       throw new Error("A client secret is required in the application options");
     if (!this.redirectUri)
-      throw new Error("A redirect uri is required in the application options");
+      throw new Error("A redirect URI is required in the application options");
 
     if (this.scopes.length < 1)
       throw new Error(

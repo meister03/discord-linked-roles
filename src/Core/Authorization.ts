@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import { Routes } from "discord-api-types/v10";
+import { Routes, Snowflake } from "discord-api-types/v10";
 import type { Application } from "core/Application";
 import { OAuthTokens } from "types/OAuthTokens";
 export class Authorization {
@@ -49,7 +49,7 @@ export class Authorization {
     return user;
   }
 
-  async getAccessToken(userId: string) {
+  async getAccessToken(userId: Snowflake) {
     const tokens = await this.application.tokenStorage.get(userId);
     if (!tokens) throw new Error("No tokens found for user");
     if (tokens.expires_at < Date.now()) {
@@ -85,24 +85,21 @@ export class Authorization {
     return tokens.access_token;
   }
 
-  setCookieAndRedirect(req: any, res: any) {
+  setCookieAndRedirect(_req: any, res: any) {
     const { state, url } = this.getOAuthUrl();
-    // Store the signed state param in the user's cookies so we can verify
-    // the value later. See:
-    // https://discord.com/developers/docs/topics/oauth2#state-and-security
+    // Store the signed state param in the user's cookies so we can verify the value later. See: https://discord.com/developers/docs/topics/oauth2#state-and-security
     res.cookie("clientState", state, { maxAge: 1000 * 60 * 5, signed: true });
     return res.redirect(url);
   }
 
-  checkCookieAndReturnCode(req: any, res: any) {
+  checkCookieAndReturnCode(req: any) {
     const code = req.query["code"];
     const discordState = req.query["state"];
 
-    // make sure the state parameter exists
+    // Make sure the state parameter exists
     const { clientState } = req.signedCookies;
-    if (clientState !== discordState) {
-      return null;
-    }
+
+    if (clientState !== discordState) return null;
     return code;
   }
 }
