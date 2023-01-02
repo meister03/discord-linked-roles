@@ -1,6 +1,6 @@
 {
     "name": "discord-linked-roles",
-    "version": "0.0.2",
+    "version": "0.1.0",
     "description": "A powerful package to create & update linked roles for applications",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
