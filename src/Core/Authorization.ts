@@ -39,12 +39,16 @@ export class Authorization {
 
     async getUserAndStoreToken(code: string) {
         const tokens = await this.getOAuthTokens(code);
+        const data = await this.application.fetchUserAfterAuth(null as any, tokens.access_token);
+        this.application.tokenStorage.set(data.user?.id as string, tokens);
+        return data;
+    }
 
-        // @ts-ignore
-        const user = await this.application.fetchUser(null, tokens.access_token);
-
-        this.application.tokenStorage.set(user.id, tokens);
-        return user;
+    async checkRequiredScopesPresent(scopes: string[]) {
+        if (this.application.scopes.some(scope => !scopes.includes(scope as any))) {
+            return false;
+        }
+        return true;
     }
 
     async getAccessToken(userId: string) {

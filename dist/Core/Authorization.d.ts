@@ -8,7 +8,8 @@ export declare class Authorization {
         url: string;
     };
     getOAuthTokens(code: string): Promise<OAuthTokens>;
-    getUserAndStoreToken(code: string): Promise<import("discord-api-types/v10").APIUser>;
+    getUserAndStoreToken(code: string): Promise<import("discord-api-types/v10").RESTGetAPIOAuth2CurrentAuthorizationResult>;
+    checkRequiredScopesPresent(scopes: string[]): Promise<boolean>;
     getAccessToken(userId: string): Promise<any>;
     setCookieAndRedirect(req: any, res: any): any;
     checkCookieAndReturnCode(req: any, res: any): any;

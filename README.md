@@ -104,7 +104,11 @@ app.get('/auth-callback', async (req, res) => {
         if (!code) return res.sendStatus(403);
 
         // Gets the user and stores the tokens
-        const user = await application.authorization.getUserAndStoreToken(code);
+        const data = await application.authorization.getUserAndStoreToken(code);
+        if(!application.authorization.checkRequiredScopesPresent(data.scopes)) return res.redirect('/linked-role');
+        const user = data.user;
+
+        // const advancedUser = await application.fetchUser(user.id); , User with email, verified ...
         
         // Set Application MetaData
         application.setUserMetaData(user.id, user.username ,{ level: 24, xp: 523 })
@@ -140,7 +144,6 @@ async function updateMetadata(userId) {
     application.setUserMetaData(user.id, user.username ,{ level: Number((Math.random()*24).toFixed(0)), xp: Number((Math.random()*523).toFixed(0)) })
 }
 ```
-
 ### Get the User Metadata
 - You can get the user metadata by using the `getUserMetaData` method.
 - Access token is required to get the metadata.
@@ -150,8 +153,30 @@ const metadata = await application.getUserMetaData(userId);
 ### Fetch the User
 - You can fetch the user by using the `fetchUser` method.
 - Access token is required to fetch the user.
+- Based on the scopes in the authorization, you can get more information about the user such as email, verified, etc.
 ```js
 const user = await application.fetchUser(userId);
+```
+### Fetch Guilds
+- You can fetch the guilds by using the `fetchUserGuilds` method.
+- Access token is required to fetch the guilds.
+- You need the `guilds` scope to fetch the guilds.
+```js
+const guilds = await application.fetchUserGuilds(userId);
+```
+### Fetch User Connections
+- You can fetch the user connections by using the `fetchUserConnections` method.
+- Access token is required to fetch the user connections.
+- You need the `connections` scope to fetch the user connections.
+```js
+const connections = await application.fetchUserConnections(userId);
+```
+### Fetch GuildMember of User in a Guild
+- You can fetch the guild member of a user in a guild by using the `fetchUserGuildMember` method.
+- Access token is required to fetch the guild member.
+- You need the `guilds.members.read` scope to fetch the guild member.
+```js
+const guildMember = await application.fetchUserGuildMember(userId, guildId);
 ```
 
 ## Persistent Storage of Access Tokens

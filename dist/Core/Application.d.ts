@@ -1,5 +1,5 @@
 import { REST } from "@discordjs/rest";
-import { RESTGetAPIUserResult } from "discord-api-types/v10";
+import { RESTGetAPICurrentUserConnectionsResult, RESTGetAPICurrentUserGuildsResult, RESTGetAPIOAuth2CurrentAuthorizationResult, RESTGetAPIUserResult } from "discord-api-types/v10";
 import { MetaDataTypes } from "../Util/Constants";
 import { Authorization } from "./Authorization";
 import { DataBaseProvider, TokenStorage } from "./TokenStorage";
@@ -25,8 +25,11 @@ export declare class Application {
     setUserMetaData(userId: string, platformName: string, metadata: {
         [key: string]: string;
     }): Promise<unknown>;
-    fetchUser(userId: string, access_token?: string): Promise<RESTGetAPIUserResult>;
-    fetchGuilds(userId: string, access_token?: string): Promise<any>;
+    fetchUserAfterAuth(userId: string, access_token?: string): Promise<RESTGetAPIOAuth2CurrentAuthorizationResult>;
+    fetchUser(userId: string, scope?: string, access_token?: string): Promise<RESTGetAPIUserResult>;
+    fetchUserGuilds(userId: string, access_token?: string): Promise<RESTGetAPICurrentUserGuildsResult>;
+    fetchUserConnections(userId: string, access_token?: string): Promise<RESTGetAPICurrentUserConnectionsResult>;
+    fetchUserGuildMember(userId: string, guildId: string, access_token?: string): Promise<import("discord-api-types/v10").APIGuildMember>;
 }
 export interface ApplicationMetaData {
     key: string;

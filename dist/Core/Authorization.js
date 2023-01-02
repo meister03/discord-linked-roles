@@ -40,10 +40,15 @@ class Authorization {
     }
     async getUserAndStoreToken(code) {
         const tokens = await this.getOAuthTokens(code);
-        // @ts-ignore
-        const user = await this.application.fetchUser(null, tokens.access_token);
-        this.application.tokenStorage.set(user.id, tokens);
-        return user;
+        const data = await this.application.fetchUserAfterAuth(null, tokens.access_token);
+        this.application.tokenStorage.set(data.user?.id, tokens);
+        return data;
+    }
+    async checkRequiredScopesPresent(scopes) {
+        if (this.application.scopes.some(scope => !scopes.includes(scope))) {
+            return false;
+        }
+        return true;
     }
     async getAccessToken(userId) {
         const tokens = await this.application.tokenStorage.get(userId);

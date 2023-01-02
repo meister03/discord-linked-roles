@@ -79,7 +79,7 @@ class Application {
         });
     }
     ;
-    async fetchUser(userId, access_token) {
+    async fetchUserAfterAuth(userId, access_token) {
         let tokens = await this.tokenStorage.get(userId);
         if (!tokens && !access_token)
             throw new Error('No tokens found for the user');
@@ -90,22 +90,41 @@ class Application {
                 Authorization: `Bearer ${tokens?.access_token}`
             },
             auth: false,
-        }).then((x) => x.user);
+        });
     }
-    async fetchGuilds(userId, access_token) {
-        if (!this.scopes.includes('guilds'))
-            throw new Error('The guilds scope is required to fetch guilds');
+    async fetchUser(userId, scope, access_token) {
         let tokens = await this.tokenStorage.get(userId);
         if (!tokens && !access_token)
             throw new Error('No tokens found for the user');
         if (!tokens && access_token)
             tokens = { access_token: access_token, refresh_token: '' };
-        return this.rest.get(v10_1.Routes.user('@me') + '/guilds', {
+        const url = scope ? v10_1.Routes.user('@me') + `/${scope}` : v10_1.Routes.user('@me');
+        return this.rest.get(url, {
             headers: {
                 Authorization: `Bearer ${tokens?.access_token}`
             },
             auth: false,
         });
+    }
+    async fetchUserGuilds(userId, access_token) {
+        if (!this.scopes.includes("guilds"))
+            throw new Error(`The guilds scope is required to for this operation.`);
+        return this.fetchUser(userId, 'guilds', access_token);
+    }
+    async fetchUserConnections(userId, access_token) {
+        if (!this.scopes.includes("connections"))
+            throw new Error(`The connections scope is required to for this operation.`);
+        return this.fetchUser(userId, 'connections', access_token);
+    }
+    async fetchUserGuildMember(userId, guildId, access_token) {
+        if (!this.scopes.includes("guilds.members.read"))
+            throw new Error(`The guilds.members.read scope is required to for this operation.`);
+        let tokens = await this.tokenStorage.get(userId);
+        if (!tokens && !access_token)
+            throw new Error('No tokens found for the user');
+        if (!tokens && access_token)
+            tokens = { access_token: access_token, refresh_token: '' };
+        return this.fetchUser(userId, `guilds/${guildId}/member`, access_token);
     }
 }
 exports.Application = Application;

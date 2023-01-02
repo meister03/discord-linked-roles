@@ -1,5 +1,5 @@
 import { REST } from "@discordjs/rest";
-import { RESTGetAPIUserResult, Routes } from "discord-api-types/v10";
+import { RESTGetAPICurrentUserConnectionsResult, RESTGetAPICurrentUserGuildsResult, RESTGetAPIGuildMemberResult, RESTGetAPIOAuth2CurrentAuthorizationResult, RESTGetAPIUserResult, Routes } from "discord-api-types/v10";
 import { DiscordConstants, MetaDataTypes, defaultScopes } from "../Util/Constants";
 import { Authorization } from "./Authorization";
 import { DataBaseProvider, TokenStorage } from "./TokenStorage";
@@ -72,7 +72,7 @@ export class Application {
         });
     };
 
-    async fetchUser(userId: string, access_token?: string): Promise<RESTGetAPIUserResult> {
+    async fetchUserAfterAuth(userId: string, access_token?: string): Promise<RESTGetAPIOAuth2CurrentAuthorizationResult> {
         let tokens = await this.tokenStorage.get(userId);
         if(!tokens && !access_token) throw new Error('No tokens found for the user');
         if(!tokens && access_token) tokens = { access_token: access_token, refresh_token: '' } as any;
@@ -81,20 +81,42 @@ export class Application {
                 Authorization: `Bearer ${tokens?.access_token}`
             },
             auth: false,
-        }).then((x: any) => x.user) as any;
+        }) as any;
     }
 
-    async fetchGuilds(userId: string, access_token?: string): Promise<any> {
-        if(!this.scopes.includes('guilds')) throw new Error('The guilds scope is required to fetch guilds');
+    async fetchUser(userId: string, scope?: string, access_token?: string ): Promise<RESTGetAPIUserResult>{
         let tokens = await this.tokenStorage.get(userId);
         if(!tokens && !access_token) throw new Error('No tokens found for the user');
         if(!tokens && access_token) tokens = { access_token: access_token, refresh_token: '' } as any;
-        return this.rest.get( Routes.user('@me') +'/guilds' as any, {
+
+        const url = scope ? Routes.user('@me') + `/${scope}` : Routes.user('@me');
+
+        return this.rest.get(url as any, {
             headers: {
                 Authorization: `Bearer ${tokens?.access_token}`
             },
             auth: false,
-        });
+        }) as any;
+    }
+
+    async fetchUserGuilds(userId: string, access_token?: string) {
+        if(!this.scopes.includes("guilds")) throw new Error(`The guilds scope is required to for this operation.`);
+        return this.fetchUser(userId, 'guilds', access_token) as unknown as Promise<RESTGetAPICurrentUserGuildsResult>
+    }
+
+    async fetchUserConnections(userId: string, access_token?: string) {
+        if(!this.scopes.includes("connections")) throw new Error(`The connections scope is required to for this operation.`);
+        return this.fetchUser(userId, 'connections', access_token) as unknown as Promise<RESTGetAPICurrentUserConnectionsResult>
+    }
+
+    async fetchUserGuildMember(userId: string, guildId: string, access_token?: string) {
+        if(!this.scopes.includes("guilds.members.read")) throw new Error(`The guilds.members.read scope is required to for this operation.`);
+
+        let tokens = await this.tokenStorage.get(userId);
+        if(!tokens && !access_token) throw new Error('No tokens found for the user');
+        if(!tokens && access_token) tokens = { access_token: access_token, refresh_token: '' } as any;
+
+        return this.fetchUser(userId, `guilds/${guildId}/member`, access_token) as unknown as Promise<RESTGetAPIGuildMemberResult>
     }
 }
 
