@@ -77,7 +77,7 @@ application.registerMetaData([
 - The `tokens` are saved under `application.tokenStorage`
 - Install the required packages: `npm i express cookie-parser crypto express`
 ```js
-const { Application, MapProvider, MetaDataTypes } = require('.discord-linked-roles');
+const { Application, MapProvider, MetaDataTypes } = require('discord-linked-roles');
 const config = require('./config.json');
 const crypto = require('crypto');
 const express = require('express');
