@@ -34,7 +34,8 @@ class Application {
             throw new Error('At least one scope is required in the application options');
         this.rest = new rest_1.REST({ version: Constants_1.DiscordConstants.http.version }).setToken(this.token);
         this.authorization = new Authorization_1.Authorization(this);
-        this.tokenStorage = new TokenStorage_1.TokenStorage(options.databaseProvider || new mapstorage_1.MapProvider());
+        const provider = options.databaseProvider || new mapstorage_1.MapProvider();
+        this.tokenStorage = new TokenStorage_1.TokenStorage(provider);
     }
     async registerMetaData(metadata) {
         if (!metadata)
@@ -51,24 +52,24 @@ class Application {
         });
     }
     async getUserMetaData(userId) {
-        const tokens = await this.tokenStorage.get(userId);
-        if (!tokens)
-            throw new Error('No tokens found for the user');
+        const access_token = await this.authorization.getAccessToken(userId);
+        if (!access_token)
+            throw new Error('No access_token found for the user');
         return this.rest.get(v10_1.Routes.userApplicationRoleConnection(this.id), {
             headers: {
-                Authorization: `Bearer ${tokens.access_token}`
+                Authorization: `Bearer ${access_token}`
             },
             auth: false
         });
     }
     ;
     async setUserMetaData(userId, platformName, metadata) {
-        const tokens = await this.tokenStorage.get(userId);
-        if (!tokens)
+        const access_token = await this.authorization.getAccessToken(userId);
+        if (!access_token)
             throw new Error('No tokens found for the user');
         return this.rest.put(v10_1.Routes.userApplicationRoleConnection(this.id), {
             headers: {
-                Authorization: `Bearer ${tokens.access_token}`,
+                Authorization: `Bearer ${access_token}`,
                 'Content-Type': 'application/json'
             },
             body: {
@@ -80,28 +81,28 @@ class Application {
     }
     ;
     async fetchUserAfterAuth(userId, access_token) {
-        let tokens = await this.tokenStorage.get(userId);
-        if (!tokens && !access_token)
+        let accessToken = await this.authorization.getAccessToken(userId);
+        if (!accessToken && !access_token)
             throw new Error('No tokens found for the user');
-        if (!tokens && access_token)
-            tokens = { access_token: access_token, refresh_token: '' };
+        if (!accessToken && access_token)
+            accessToken = access_token;
         return this.rest.get(v10_1.Routes.oauth2CurrentAuthorization(), {
             headers: {
-                Authorization: `Bearer ${tokens?.access_token}`
+                Authorization: `Bearer ${accessToken}`
             },
             auth: false,
         });
     }
     async fetchUser(userId, scope, access_token) {
-        let tokens = await this.tokenStorage.get(userId);
-        if (!tokens && !access_token)
+        let accessToken = await this.authorization.getAccessToken(userId);
+        if (!accessToken && !access_token)
             throw new Error('No tokens found for the user');
-        if (!tokens && access_token)
-            tokens = { access_token: access_token, refresh_token: '' };
+        if (!accessToken && access_token)
+            accessToken = access_token;
         const url = scope ? v10_1.Routes.user('@me') + `/${scope}` : v10_1.Routes.user('@me');
         return this.rest.get(url, {
             headers: {
-                Authorization: `Bearer ${tokens?.access_token}`
+                Authorization: `Bearer ${accessToken}`
             },
             auth: false,
         });
@@ -119,11 +120,6 @@ class Application {
     async fetchUserGuildMember(userId, guildId, access_token) {
         if (!this.scopes.includes("guilds.members.read"))
             throw new Error(`The guilds.members.read scope is required to for this operation.`);
-        let tokens = await this.tokenStorage.get(userId);
-        if (!tokens && !access_token)
-            throw new Error('No tokens found for the user');
-        if (!tokens && access_token)
-            tokens = { access_token: access_token, refresh_token: '' };
         return this.fetchUser(userId, `guilds/${guildId}/member`, access_token);
     }
 }

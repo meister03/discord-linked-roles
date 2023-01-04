@@ -7,9 +7,7 @@ export declare const UserModel: mongoose.Model<{
         refresh_token?: string | undefined;
         expires_at?: number | undefined;
     } | undefined;
-}, {}, {}, {}, mongoose.Schema<any, mongoose.Model<any, any, any, any, any>, {}, {}, {}, {}, mongoose.ResolveSchemaOptions<{
-    collection: string;
-}>, {
+}, {}, {}, {}, mongoose.Schema<any, mongoose.Model<any, any, any, any, any>, {}, {}, {}, {}, mongoose.DefaultSchemaOptions, {
     id?: string | undefined;
     tokens?: {
         access_token?: string | undefined;

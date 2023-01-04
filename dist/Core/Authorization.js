@@ -53,7 +53,7 @@ class Authorization {
     async getAccessToken(userId) {
         const tokens = await this.application.tokenStorage.get(userId);
         if (!tokens)
-            throw new Error('No tokens found for user');
+            return null;
         if (tokens.expires_at < Date.now()) {
             const body = new URLSearchParams({
                 client_id: this.application.id,

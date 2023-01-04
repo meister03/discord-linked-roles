@@ -13,7 +13,7 @@ const userSchema = new Schema({
         refresh_token: String,
         expires_at: Number,
     }
-}, { collection: 'userTokens' });
+});
 exports.UserModel = mongoose_1.default.model('userTokens', userSchema);
 class MongooseProvider {
     constructor(mongoUri) {

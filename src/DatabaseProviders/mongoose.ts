@@ -10,7 +10,7 @@ const userSchema = new Schema({
         refresh_token: String,
         expires_at: Number,
     }
-}, { collection: 'userTokens' });
+});
 
 export const UserModel = mongoose.model('userTokens', userSchema);
 
@@ -18,6 +18,7 @@ export class MongooseProvider {
     constructor(mongoUri: string){
         mongoose.connect(mongoUri);
     }
+
     async fetchUser(userId: string){
         const user = await UserModel.findOne({ id: userId });
         if(!user) return undefined;

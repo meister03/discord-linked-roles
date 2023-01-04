@@ -52,7 +52,7 @@ const application = new Application({
     clientSecret: config.clientSecret,
     redirectUri: config.redirectUri,
     scopes: config.scopes,
-    dataBaseProvider: new MapProvider() // new MongooseProvider(databaseUrl),
+    databaseProvider: new MapProvider() // new MongooseProvider(databaseUrl),
 });
 // Following value types exists: Boolean, Date, Integer
 application.registerMetaData([
@@ -89,7 +89,7 @@ const application = new Application({
     clientSecret: config.clientSecret,
     redirectUri: config.redirectUri,
     scopes: config.scopes,
-    dataBaseProvider: new MapProvider() // new MongooseProvider(databaseUrl),
+    databaseProvider: new MapProvider() // new MongooseProvider(databaseUrl),
 });
 
 const app = express();
